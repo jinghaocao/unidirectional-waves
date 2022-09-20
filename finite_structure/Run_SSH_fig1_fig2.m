@@ -3,6 +3,26 @@
 k=10;
 N = 4*k+1;
 
+% Plot the edge Bloch mode with index ind_mode
+ind_mode = N-1;
+figure
+hold on
+for eps = [0,0.2]
+    eps_modulation = [ones(1,N)*eps];
+    [f_exp,V] = produce_fexp_edge(N,eps_modulation);
+    plot(1:N,real(V(1:N,ind_mode)))  
+    xlim([1,N])
+end
+legend('\epsilon = 0','\epsilon = 0.2','\epsilon = 0.4','\epsilon = 0.6','\epsilon = 0.8')
+ind_mode = N-2;
+for eps = [0.4:0.2:0.8]
+    eps_modulation = [ones(1,N)*eps];
+    [f_exp,V] = produce_fexp_edge(N,eps_modulation);
+    plot(1:N,real(V(1:N,ind_mode)))  
+    xlim([1,N])
+end
+% legend('\epsilon = 0','\epsilon = 0.1','\epsilon = 0.2','\epsilon = 0.3')
+
 % Plot all Bloch modes
 eps_modulation = [ones(1,ceil(N/2))*eps, zeros(1,floor(N/2))];
 eps_modulation = [zeros(1,N)];
@@ -13,20 +33,6 @@ for j = 1:N
     plot(1:N,real(V(1:N,j)))
     xlim([1,N])
 end
-
-% Plot the edge Bloch mode with index ind_mode
-ind_mode = N-1;
-figure
-hold on
-for eps = [0:0.1:0.3]
-    eps_modulation = [ones(1,N)*eps];
-    [f_exp,V] = produce_fexp_edge(N,eps_modulation);
-    plot(1:N,real(V(1:N,ind_mode)))  
-    xlim([1,N])
-end
-legend('\epsilon = 0','\epsilon = 0.1','\epsilon = 0.2','\epsilon = 0.3')
-
-
 function [f_exp,V] = produce_fexp_edge(N,eps_modulation)
     %% Initializing the structure
     % radii
@@ -58,7 +64,7 @@ function [f_exp,V] = produce_fexp_edge(N,eps_modulation)
     end
     phase_shift = [];
     k_left = floor(N/(2*2));
-    phase_shift = [repmat([0,1/2],1,k_left),  zeros(1,N-k_left*2)];    
+    phase_shift = [repmat([0,1/2],1,k_left),0,repmat([1/2,0],1,k_left)];    
 
     rhot = @(t) rho_b./(1 + eps_modulation.*cos(Omega*t + pi*phase_shift)); 
 
